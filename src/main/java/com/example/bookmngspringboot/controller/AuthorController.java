@@ -36,7 +36,7 @@ public class AuthorController {
         return new ResponseEntity<>(authorService.save(author), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Author> deleteAuthor(@PathVariable Long id) {
         Optional<Author> authorOptional = authorService.findById(id);
         if (!authorOptional.isPresent()) {
@@ -47,10 +47,10 @@ public class AuthorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> viewAuthor(@PathVariable Long id) {
-        Optional<Author> authorOptional = authorService.findById(id);
-        return authorOptional.
-                map(author -> new ResponseEntity<>(author, HttpStatus.OK)).
+    public ResponseEntity<Author> getAuthor(@PathVariable Long id) {
+        Optional<Author> author = authorService.findById(id);
+        return author.
+                map(value -> new ResponseEntity<>(value, HttpStatus.OK)).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

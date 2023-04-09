@@ -1,5 +1,6 @@
 package com.example.bookmngspringboot.controller;
 
+import com.example.bookmngspringboot.model.Author;
 import com.example.bookmngspringboot.model.Book;
 import com.example.bookmngspringboot.service.book.IBookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -53,5 +55,24 @@ public class BookController {
         return bookOptional.
                 map(book -> new ResponseEntity<>(book, HttpStatus.OK)).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/total-price")
+    public ResponseEntity<Long> getTotalPrice() {
+        Long totalPrice = bookService.getTotalPrice();
+        return ResponseEntity.ok(totalPrice);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Iterable<Book>> search(
+            @RequestParam(value = "bookName") Optional<String> bookName,
+            @RequestParam(value = "author") Optional<Author> author,
+            @RequestParam(value = "minPrice", required = false) Optional<Long> minPrice,
+            @RequestParam(value = "maxPrice", required = false) Optional<Long> maxPrice) {
+        List<Book> books = bookService.findAllByBookNameOrAuthorOrPriceBetween(bookName,author , minPrice, maxPrice);
+        if (books.isEmpty() ){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(books, HttpStatus.OK);
     }
 }
