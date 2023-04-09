@@ -60,7 +60,7 @@ public class BookController {
     @GetMapping("/total-price")
     public ResponseEntity<Long> getTotalPrice() {
         Long totalPrice = bookService.getTotalPrice();
-        return ResponseEntity.ok(totalPrice);
+        return new ResponseEntity<>(totalPrice,HttpStatus.OK);
     }
 
     @GetMapping("/search")
